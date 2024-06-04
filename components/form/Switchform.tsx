@@ -18,8 +18,15 @@ import { toast } from "@/components/ui/use-toast";
 import { useTheme } from "next-themes";
 import {useIsSSR} from "@react-aria/ssr";
 import { ThemeSwitch } from "../theme-switch";
+import { Input } from "../ui/input";
+import { Textarea } from "../ui/textarea";
 
 const FormSchema = z.object({
+  title: z.string(),
+  description: z.string(),
+  instagram: z.string(),
+  facebook: z.string(),
+  twitter: z.string(),
   message: z.boolean().default(false).optional(),
   recommendation: z.boolean().default(false).optional(),
   theme: z.boolean().default(false).optional(),
@@ -47,19 +54,94 @@ export function SwitchForm() {
     });
   }
 
-  const { theme, setTheme } = useTheme();
-
-  const isSSR = useIsSSR();
-
-  const onChange = () => {
-    theme === "light" ? setTheme("dark") : setTheme("light");
-  };
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">
         <div>
-          <h3 className="mb-4 text-lg font-medium">Account Settings</h3>
+          <h3 className="mb-4 text-lg font-medium">Personal Settings</h3>
           <div className="space-y-4">
+          <FormField
+              control={form.control}
+              name="title"
+              render={({ field }) => (
+                <FormItem className="flex flex-col  justify-between rounded-lg border p-4">
+                  <div className="space-y-0.5">
+                    <FormLabel className="text-base">
+                      Title
+                    </FormLabel>
+                  </div>
+                  <FormControl>
+                    <Input />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+          <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem className="flex flex-col  justify-between rounded-lg border p-4">
+                  <div className="space-y-0.5">
+                    <FormLabel className="text-base">
+                      Description
+                    </FormLabel>
+                  </div>
+                  <FormControl>
+                    <Textarea />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+          <h3 className="mb-4 text-lg font-medium">Social Links</h3>
+          <FormField
+              control={form.control}
+              name="instagram"
+              render={({ field }) => (
+                <FormItem className="flex flex-col  justify-between rounded-lg border p-4">
+                  <div className="space-y-0.5">
+                    <FormLabel className="text-base">
+                      Instagram
+                    </FormLabel>
+                  </div>
+                  <FormControl>
+                    <Input />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+          <FormField
+              control={form.control}
+              name="facebook"
+              render={({ field }) => (
+                <FormItem className="flex flex-col  justify-between rounded-lg border p-4">
+                  <div className="space-y-0.5">
+                    <FormLabel className="text-base">
+                      Facebook
+                    </FormLabel>
+                  </div>
+                  <FormControl>
+                    <Input />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+          <FormField
+              control={form.control}
+              name="twitter"
+              render={({ field }) => (
+                <FormItem className="flex flex-col  justify-between rounded-lg border p-4">
+                  <div className="space-y-0.5">
+                    <FormLabel className="text-base">
+                      Twitter
+                    </FormLabel>
+                  </div>
+                  <FormControl>
+                    <Input />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+              <h3 className="mb-4 text-lg font-medium">Account Settings</h3>
             <FormField
               control={form.control}
               name="message"
