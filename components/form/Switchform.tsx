@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -12,15 +12,21 @@ import {
   FormField,
   FormItem,
   FormLabel,
-} from "@/components/ui/form"
-import { Switch } from "@/components/ui/switch"
-import { toast } from "@/components/ui/use-toast"
+} from "@/components/ui/form";
+import { Switch } from "@/components/ui/switch";
+import { toast } from "@/components/ui/use-toast";
+import { useTheme } from "next-themes";
+import {useIsSSR} from "@react-aria/ssr";
+import { ThemeSwitch } from "../theme-switch";
 
 const FormSchema = z.object({
   message: z.boolean().default(false).optional(),
   recommendation: z.boolean().default(false).optional(),
+  theme: z.boolean().default(false).optional(),
+  new: z.boolean().default(false).optional(),
+  news: z.boolean().default(false).optional(),
   security_emails: z.boolean(),
-})
+});
 
 export function SwitchForm() {
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -28,7 +34,7 @@ export function SwitchForm() {
     defaultValues: {
       security_emails: true,
     },
-  })
+  });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
     toast({
@@ -38,9 +44,16 @@ export function SwitchForm() {
           <code className="text-white">{JSON.stringify(data, null, 2)}</code>
         </pre>
       ),
-    })
+    });
   }
 
+  const { theme, setTheme } = useTheme();
+
+  const isSSR = useIsSSR();
+
+  const onChange = () => {
+    theme === "light" ? setTheme("dark") : setTheme("light");
+  };
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">
@@ -91,16 +104,64 @@ export function SwitchForm() {
                 </FormItem>
               )}
             />
+            <h3 className="mb-4 text-lg font-medium">Theme Settings</h3>
+            <FormField
+              control={form.control}
+              name="theme"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                  <div className="space-y-0.5">
+                    <FormLabel className="text-base">Change Theme</FormLabel>
+                    <FormDescription>Turn theme into dark mode</FormDescription>
+                  </div>
+                  <FormControl>
+                    <ThemeSwitch />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <h3 className="mb-4 text-lg font-medium">Notification Settinga</h3>
+            <FormField
+              control={form.control}
+              name="new"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                  <div className="space-y-0.5">
+                    <FormLabel className="text-base">What&apos;s new</FormLabel>
+                  </div>
+                  <FormControl>
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="news"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                  <div className="space-y-0.5">
+                    <FormLabel className="text-base">News and tips</FormLabel>
+                  </div>
+                  <FormControl>
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="security_emails"
               render={({ field }) => (
                 <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                   <div className="space-y-0.5">
-                    <FormLabel className="text-base">Security emails</FormLabel>
-                    <FormDescription>
-                      Receive emails about your account security.
-                    </FormDescription>
+                    <FormLabel className="text-base">System information</FormLabel>
                   </div>
                   <FormControl>
                     <Switch
@@ -118,5 +179,5 @@ export function SwitchForm() {
         <Button type="submit">Submit</Button>
       </form>
     </Form>
-  )
+  );
 }
